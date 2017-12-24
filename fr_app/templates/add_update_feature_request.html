@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block title %} {{ title }} {% endblock title %}
+
+
+{% block content %}
+    {% if form %}
+        <h2 class="form-signin-heading">Enter feature details</h2>
+        {% if action == 'edit' %}
+            <form class="form-signin"  method="post" action="{{ url_for('add_update_feature', id=form.data['id']) }}">
+        {% else %}
+            <form class="form-signin"  method="post" action="{{ url_for('add_update_feature') }}">
+        {% endif %}
+            {{ form.csrf_token }}
+            <div class="form-group row">
+            {% for field in ['title', 'description', 'user', 'client', 'feature_priority', 'product_area', 'captcha'] %}
+                <div class="col">
+                    {{ form[field].label }}
+                    {% if form[field].name in form.errors %}
+                        {{ form[field](class='form-control is-invalid') }}
+                        <div class="text-danger">{{ form.errors[form[field].name][0] }}</div>
+                    {% else %}
+                        {{ form[field](class='form-control') }}
+                    {% endif %}
+                </div>
+            {% endfor %}
+            <div class="form-group row">
+                <div class="col">
+                  {% if action == 'edit' %}
+                    <input type="submit" value="Update" class="btn-block btn btn-block btn-primary">
+                  {% elif action == 'add' %}
+                    <input type="submit" value="Create" class="btn-block btn btn-block btn-primary">
+                  {% endif %}
+                </div>
+            </div>
+
+        </form>
+    {% endif %}
+{% endblock content %}
+
+{% block script %}
+    <script src='https://www.google.com/recaptcha/api.js'></script>
+{% endblock script %}

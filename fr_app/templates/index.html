@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block title %} {{ title }} {% endblock title %}
+
+
+{% block content %}
+    {% if features %}
+        {% for feature in features %}
+          <div class="well clearfix">
+            <div class="col-lg-6">
+              <h4>{{ feature.title }}</h4>
+              <p>{{ feature.description }}</p>
+            </div>
+          </div>
+        {% endfor %}
+    {% else %}
+        <div class="well clearfix">
+            <p>
+                No feature requests to show, try creating one
+                <a href="{{ url_for('add_update_feature') }}">here</a>
+            </p>
+        </div>
+    {% endif %}
+{% endblock content %}
