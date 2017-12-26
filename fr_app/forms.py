@@ -4,7 +4,8 @@ from wtforms import StringField, TextAreaField
 from wtforms.fields.html5 import IntegerField
 from wtforms.ext.sqlalchemy.fields import QuerySelectField
 from wtforms.validators import DataRequired, Length, Optional
-from wtforms.widgets.html5 import NumberInput, HiddenInput
+from wtforms.widgets import HiddenInput
+from wtforms.widgets.html5 import NumberInput
 
 from .utils import (
     get_user_choices,

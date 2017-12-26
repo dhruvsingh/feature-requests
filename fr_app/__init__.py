@@ -3,8 +3,6 @@ import os
 from flask import Flask
 from dotenv import load_dotenv
 
-app = Flask(__name__)
-
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -42,11 +40,11 @@ def read_env():
 # load environment variables from .env file
 read_env()
 
+app = Flask(__name__)
 env = get_env_var('SETTINGS_MODULE', 'DevelopmentConf')
 app.config.from_object(env)
 app.config['ENV'] = env
-
 # guess this is the standard way as to how Flask works
 # some apps suggest doing this on the wsgi file
 # doing it here to support dev work using the inbuilt dev server
-from fr_app import views
+import fr_app.views
