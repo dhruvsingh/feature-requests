@@ -216,5 +216,4 @@ jspm_packages
 
 .tmp
 *.sqlite3
-static/
 media/
