@@ -30,7 +30,7 @@ class FeatureRequestForm(FlaskForm):
     )
     user = QuerySelectField(
         label='User',
-        get_label='name',
+        get_label='first_name',
         validators=[DataRequired()],
         query_factory=get_user_choices
     )

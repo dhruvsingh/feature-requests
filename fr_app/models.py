@@ -58,7 +58,6 @@ class FeatureRequest(db.Model):
 class Client(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(255))
-    contact = db.Column(db.String(25))
 
     def __repr__(self):
         return '<Client %r>' % self.name

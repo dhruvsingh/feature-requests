@@ -47,4 +47,4 @@ app.config['ENV'] = env
 # guess this is the standard way as to how Flask works
 # some apps suggest doing this on the wsgi file
 # doing it here to support dev work using the inbuilt dev server
-import fr_app.views
+import fr_app.views  # noqa
