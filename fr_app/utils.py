@@ -1,13 +1,9 @@
-from .models import User, Client, ProductArea
+from datetime import datetime
+
+from marshmallow import ValidationError
 
 
-def get_user_choices():
-    return User.query.all()
-
-
-def get_client_choices():
-    return Client.query.all()
-
-
-def get_product_areas_choices():
-    return ProductArea.query.all()
+def validate_date_in_future(value):
+    """Validate date in future."""
+    if value < datetime.now().date():
+        raise ValidationError('Target date must be in the future')
