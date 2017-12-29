@@ -3,7 +3,6 @@ from flask_sqlalchemy import SQLAlchemy
 
 from datetime import datetime
 
-
 db = SQLAlchemy(app)
 
 
@@ -39,13 +38,14 @@ class FeatureRequest(db.Model):
         nullable=False
     )
     user = db.relationship('User', backref='feature_requests')
-    client_priority = db.Column(db.Integer)
+    client_priority = db.Column(db.Integer, default=1)
     product_area_id = db.Column(
         db.Integer,
         db.ForeignKey('product_area.id'),
         nullable=False
     )
     product_area = db.relationship('ProductArea', backref='feature_requests')
+    target_date = db.Column(db.Date, nullable=False)
     created_on = db.Column(db.DateTime, default=datetime.utcnow())
     updated_on = db.Column(db.DateTime, onupdate=datetime.utcnow())
 

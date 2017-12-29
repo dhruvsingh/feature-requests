@@ -31,19 +31,11 @@ def add_update_feature(id=None):
         action = 'add'
 
     if form.validate_on_submit():
-        try:
-            form.populate_obj(fr)
-        except ValueError as error:
-            # TODO: Is there a better way of passing error up from the model?
-            form.errors['target_date'] = [str(error)]
-        else:
-            db.session.add(fr)
-            db.session.commit()
+        form.populate_obj(fr)
+        db.session.add(fr)
+        db.session.commit()
 
-            # TODO:
-            # Feature request id isn't populated after commit for some
-            # reason, so we'll just redirect to main page.
-            return redirect(url_for('home_page'))
+        return redirect(url_for('home_page'))
 
     return render_template(
         'add_update_feature_request.html',

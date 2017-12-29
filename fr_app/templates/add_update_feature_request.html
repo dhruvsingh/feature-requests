@@ -13,7 +13,7 @@
         {% endif %}
             {{ form.csrf_token }}
             <div class="form-group row">
-            {% for field in ['title', 'description', 'user', 'client', 'feature_priority', 'product_area', 'captcha'] %}
+            {% for field in ['title', 'description', 'user', 'client', 'client_priority', 'product_area', 'target_date'] %}
                 <div class="col">
                     {{ form[field].label }}
                     {% if form[field].name in form.errors %}
@@ -26,11 +26,17 @@
             {% endfor %}
             <div class="form-group row">
                 <div class="col">
-                  {% if action == 'edit' %}
-                    <input type="submit" value="Update" class="btn-block btn btn-block btn-primary">
-                  {% elif action == 'add' %}
-                    <input type="submit" value="Create" class="btn-block btn btn-block btn-primary">
-                  {% endif %}
+                    {% if form['captcha'].name in form.errors %}
+                        {{ form['captcha'](class='form-control is-invalid') }}
+                        <div class="text-danger">{{ form.errors['captcha'][0] }}</div>
+                    {% else %}
+                        {{ form['captcha'](class='form-control') }}
+                    {% endif %}
+                    {% if action == 'edit' %}
+                        <input type="submit" value="Update" class="btn btn-primary">
+                    {% elif action == 'add' %}
+                        <input type="submit" value="Create" class="btn btn-primary">
+                    {% endif %}
                 </div>
             </div>
 

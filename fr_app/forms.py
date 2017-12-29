@@ -1,9 +1,11 @@
+from datetime import datetime, timedelta
+
 from flask_wtf import FlaskForm, RecaptchaField
 
 from wtforms import StringField, TextAreaField
-from wtforms.fields.html5 import IntegerField
+from wtforms.fields.html5 import DateField, IntegerField
 from wtforms.ext.sqlalchemy.fields import QuerySelectField
-from wtforms.validators import DataRequired, Length, Optional
+from wtforms.validators import DataRequired, Length, Optional, ValidationError
 from wtforms.widgets import HiddenInput
 from wtforms.widgets.html5 import NumberInput
 
@@ -40,7 +42,12 @@ class FeatureRequestForm(FlaskForm):
         validators=[DataRequired()],
         query_factory=get_client_choices
     )
-    feature_priority = IntegerField(
+    target_date = DateField(
+        format="%Y-%m-%d",
+        validators=[DataRequired()],
+        default=datetime.now().date() + timedelta(days=14)
+    )
+    client_priority = IntegerField(
         default=1,
         label='Feature priority',
         validators=[Optional()],
@@ -53,3 +60,7 @@ class FeatureRequestForm(FlaskForm):
         query_factory=get_product_areas_choices
     )
     captcha = RecaptchaField()
+
+    def validate_target_date(form, field):
+        if field.data < datetime.now().date():
+            raise ValidationError('Target date must be in the future')
