@@ -26,11 +26,8 @@
       <div class="header clearfix">
         <nav>
           <ul class="nav nav-pills pull-right">
-            <li role="presentation" class="{{ home_active }}">
-              <a href="/">Home</a>
-            </li>
-            <li role="presentation" class="{{ feature_active }}">
-              <a href="/feature/add/">Request a feature</a>
+            <li role="presentation">
+              <a data-toggle="modal" data-target="#add_fr">Request a feature</a>
             </li>
             <li role="presentation">
               <a href="https://github.com/dhruvsingh/feature-requests#restful-feature-requests-app" target="_blank">About</a>
@@ -46,6 +43,8 @@
     {% block script %}
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
         <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/knockout-3.4.2.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/app.js') }}"></script>
     {% endblock script %}
   </body>
 </html>

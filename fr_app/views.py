@@ -103,8 +103,12 @@ def fetch_feature_request_by_id(id=None):
     db.session.add(feature_request)
     db.session.commit()
 
-    return jsonify({"message": "Updated feature request."}), 200
-
+    return jsonify(
+        {
+            "message": "Updated feature request.",
+            "data": FeatureRequestSchema().dump(feature_request)
+        }
+    ), 200
 
 
 @app.route('/api/feature_requests/add/', methods=('POST',))
@@ -127,4 +131,9 @@ def add_feature_request():
     db.session.add(feature_request)
     db.session.commit()
 
-    return jsonify({"message": "Created new feature request."}), 201
+    return jsonify(
+        {
+            "message": "Created new feature request.",
+            "data": FeatureRequestSchema().dump(feature_request)
+        }
+    ), 201

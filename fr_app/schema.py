@@ -25,13 +25,9 @@ class FeatureRequestSchema(Schema):
     )
     description = fields.Str(required=True)
     client_priority = fields.Int(required=True)
-    user_id = fields.Int(required=True, load_only=True, load_from="user")
-    client_id = fields.Int(required=True, load_only=True, load_from="client")
-    product_area_id = fields.Int(
-        required=True,
-        load_only=True,
-        load_from="product_area"
-    )
+    user_id = fields.Int(required=True, load_from="user")
+    client_id = fields.Int(required=True, load_from="client")
+    product_area_id = fields.Int(required=True, load_from="product_area")
     user = fields.Str(dump_only=True)
     client = fields.Str(dump_only=True)
     product_area = fields.Str(dump_only=True)

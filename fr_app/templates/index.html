@@ -1,29 +1,145 @@
 {% extends 'base.html' %}
 
-{% block title %} {{ title }} {% endblock title %}
+<title>Feature Requests</title>
 
 {% block content %}
-    {% if features %}
-        {% for feature in features %}
-          <div class="well clearfix">
-            <div class="col-lg-6">
-              <h4>{{ feature.title }}</h4>
-              <p>{{ feature.description }}</p>
-            </div>
-            <div class="col-lg-6">
-              <a class="btn btn-warning pull-right"
-                  href="{{ url_for('add_update_feature', id=feature.id) }}">
-                  Edit
-              </a>
-            </div>
-          </div>
-        {% endfor %}
-    {% else %}
-        <div class="well clearfix">
-            <p>
-                No feature requests to show, try creating one
-                <a href="{{ url_for('add_update_feature') }}">here</a>
-            </p>
+  <div data-bind="foreach: featureRequests , visible: featureRequests().length > 0">
+    <div class="well clearfix" >
+      <div class="col-lg-6">
+        <h4 data-bind="text: title"></h4>
+        <p data-bind="text: description"></p>
+      </div>
+      <div class="col-lg-6">
+        <a class="btn btn-warning pull-right" data-toggle="modal" data-bind="click: $parent.setRequest.bind($root)">
+          Edit
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="well clearfix" data-bind="foreach: featureRequests , visible: featureRequests().length == 0">
+    <p>No feature requests to show, try creating one.</p>
+  </div>
+
+  <div id="add_fr" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="addDialogLabel">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+          <h3>Request new feature</h3>
         </div>
-    {% endif %}
+
+        <div class="modal-body">
+          <form data-bind="submit: addRequest" id="add_fr_form">
+            <div class="form-group">
+              <label class="control-label" for="title">Feature request</label>
+              <input data-bind="value: title.value" type="text" id="title" name="title" placeholder="Title" step="1" min="1" class="form-control" required>
+            </div>
+
+            <div class="form-group">
+              <label class="control-label" for="description">Description</label>
+              <textarea data-bind="value: description.value" name="description" class="form-control" rows="5" id="description" placeholder="Description"></textarea>
+            </div>
+
+            <div class="form-group">
+              <label class="control-label" for="client">Client</label>
+              <select data-bind="options: clients(), optionsValue: 'id', optionsText: 'name'" id="client" class="form-control" name="client"></select>
+            </div>
+
+            <div class="form-group">
+              <label class="control-label" for="user">User</label>
+              <select data-bind="options: users(), optionsValue: 'id', optionsText: 'first_name'" id="user" class="form-control" name="user"></select>
+            </div>
+
+            <div class="form-group">
+              <label class="control-label" for="client_priority">Priority</label>
+              <input data-bind="value: client_priority" type="number" id="client_priority" placeholder="1" class="form-control" name="client_priority" required>
+            </div>
+
+            <div class="form-group">
+              <label class="control-label" for="target_date">Target date</label>
+                <div class="input-group date">
+                  <input data-bind="value: target_date" id="target_date" name="target_date" type="date" class="form-control" required>
+                  <div class="input-group-addon">
+                    <span class="glyphicon glyphicon-calendar"></span>
+                  </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+              <label class="control-label" for="product_area">Product area</label>
+              <select data-bind="options: product_areas(), optionsValue: 'id', optionsText: 'name'" id="product_area" class="form-control" name="product_area"></select>
+            </div>
+
+            <div class="modal-footer">
+              <button class="btn btn-primary" type="submit">Add request</button>
+              <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="edit_fr" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="addDialogLabel">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+          <h3>Update feature request</h3>
+        </div>
+
+        <div class="modal-body">
+          <form data-bind="submit: updateRequest, with: $data.feature_request" id="edit_fr_form">
+            <input type="hidden" data-bind="value: id" name="id" id="id">
+            <div class="form-group">
+              <label class="control-label" for="title">Feature request</label>
+              <input data-bind="value: title" type="text" id="title" name="title" placeholder="Title" step="1" min="1" class="form-control" required>
+            </div>
+
+            <div class="form-group">
+              <label class="control-label" for="description">Description</label>
+              <textarea data-bind="text: description" name="description" class="form-control" rows="5" id="description" placeholder="Description"></textarea>
+            </div>
+
+            <div class="form-group">
+              <label class="control-label" for="client">Client</label>
+              <select data-bind="options: $root.clients(), optionsValue: 'id', optionsText: 'name' , value: $parent.feature_request().client_id" id="client" class="form-control" name="client"></select>
+            </div>
+
+            <div class="form-group">
+              <label class="control-label" for="user">User</label>
+              <select data-bind="options: $root.users(), optionsValue: 'id', optionsText: 'first_name', value: $parent.feature_request().user_id" id="user" class="form-control" name="user"></select>
+            </div>
+
+            <div class="form-group">
+              <label class="control-label" for="client_priority">Priority</label>
+              <input data-bind="value: client_priority" type="number" id="client_priority" placeholder="1" class="form-control" name="client_priority" required>
+            </div>
+
+            <div class="form-group">
+              <label class="control-label" for="target_date">Target date</label>
+                <div class="input-group date">
+                  <input data-bind="value: target_date" id="target_date" name="target_date" type="date" class="form-control" required>
+                  <div class="input-group-addon">
+                    <span class="glyphicon glyphicon-calendar"></span>
+                  </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+              <label class="control-label" for="product_area">Product area</label>
+              <select data-bind="options: $root.product_areas(), optionsValue: 'id', optionsText: 'name', value: $parent.feature_request().product_area_id" id="product_area" class="form-control" name="product_area"></select>
+            </div>
+
+            <div class="modal-footer">
+              <button class="btn btn-primary" type="submit">Update request</button>
+              <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
 {% endblock content %}
