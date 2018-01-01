@@ -3,8 +3,12 @@
 <title>Feature Requests</title>
 
 {% block content %}
-  <div data-bind="foreach: featureRequests , visible: featureRequests().length > 0">
-    <div class="well clearfix" >
+  <div class="well clearfix" data-bind="visible: featureRequests().length == 0">
+    <p>No feature requests to show, try creating one.</p>
+  </div>
+
+  <div data-bind="foreach: featureRequests ,visible: featureRequests().length > 0">
+    <div class="well clearfix">
       <div class="col-lg-6">
         <h4 data-bind="text: title"></h4>
         <p data-bind="text: description"></p>
@@ -17,10 +21,6 @@
     </div>
   </div>
 
-  <div class="well clearfix" data-bind="foreach: featureRequests , visible: featureRequests().length == 0">
-    <p>No feature requests to show, try creating one.</p>
-  </div>
-
   <div id="add_fr" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="addDialogLabel">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
@@ -31,32 +31,37 @@
 
         <div class="modal-body">
           <form data-bind="submit: addRequest" id="add_fr_form">
-            <div class="form-group">
+            <div class="form-group" data-bind="css: { 'has-error': $root.errors().title }">
               <label class="control-label" for="title">Feature request</label>
               <input data-bind="value: title.value" type="text" id="title" name="title" placeholder="Title" step="1" min="1" class="form-control" required>
+              <span class="help-block" data-bind="text: $root.errors().title"></span>
             </div>
 
-            <div class="form-group">
+            <div class="form-group" data-bind="css: { 'has-error': $root.errors().description }">
               <label class="control-label" for="description">Description</label>
               <textarea data-bind="value: description.value" name="description" class="form-control" rows="5" id="description" placeholder="Description"></textarea>
+              <span class="help-block" data-bind="text: $root.errors().description"></span>
             </div>
 
-            <div class="form-group">
+            <div class="form-group" data-bind="css: { 'has-error': $root.errors().client }">
               <label class="control-label" for="client">Client</label>
               <select data-bind="options: clients(), optionsValue: 'id', optionsText: 'name'" id="client" class="form-control" name="client"></select>
+              <span class="help-block" data-bind="text: $root.errors().client"></span>
             </div>
 
-            <div class="form-group">
+            <div class="form-group" data-bind="css: { 'has-error': $root.errors().user }">
               <label class="control-label" for="user">User</label>
               <select data-bind="options: users(), optionsValue: 'id', optionsText: 'first_name'" id="user" class="form-control" name="user"></select>
+              <span class="help-block" data-bind="text: $root.errors().user"></span>
             </div>
 
-            <div class="form-group">
+            <div class="form-group" data-bind="css: { 'has-error': $root.errors().client_priority }">
               <label class="control-label" for="client_priority">Priority</label>
               <input data-bind="value: client_priority" type="number" id="client_priority" placeholder="1" class="form-control" name="client_priority" required>
+              <span class="help-block" data-bind="text: $root.errors().client_priority"></span>
             </div>
 
-            <div class="form-group">
+            <div class="form-group" data-bind="css: { 'has-error': $root.errors().target_date }">
               <label class="control-label" for="target_date">Target date</label>
                 <div class="input-group date">
                   <input data-bind="value: target_date" id="target_date" name="target_date" type="date" class="form-control" required>
@@ -64,11 +69,13 @@
                     <span class="glyphicon glyphicon-calendar"></span>
                   </div>
                 </div>
+                <span class="help-block" data-bind="text: $root.errors().target_date"></span>
             </div>
 
-            <div class="form-group">
+            <div class="form-group" data-bind="css: { 'has-error': $root.errors().product_area }">
               <label class="control-label" for="product_area">Product area</label>
               <select data-bind="options: product_areas(), optionsValue: 'id', optionsText: 'name'" id="product_area" class="form-control" name="product_area"></select>
+              <span class="help-block" data-bind="text: $root.errors().product_area"></span>
             </div>
 
             <div class="modal-footer">
@@ -92,32 +99,37 @@
         <div class="modal-body">
           <form data-bind="submit: updateRequest, with: $data.feature_request" id="edit_fr_form">
             <input type="hidden" data-bind="value: id" name="id" id="id">
-            <div class="form-group">
+            <div class="form-group" data-bind="css: { 'has-error': $root.errors().title }">
               <label class="control-label" for="title">Feature request</label>
               <input data-bind="value: title" type="text" id="title" name="title" placeholder="Title" step="1" min="1" class="form-control" required>
+              <span class="help-block" data-bind="text: $root.errors().title"></span>
             </div>
 
-            <div class="form-group">
+            <div class="form-group" data-bind="css: { 'has-error': $root.errors().description }">
               <label class="control-label" for="description">Description</label>
               <textarea data-bind="text: description" name="description" class="form-control" rows="5" id="description" placeholder="Description"></textarea>
+              <span class="help-block" data-bind="text: $root.errors().description"></span>
             </div>
 
-            <div class="form-group">
+            <div class="form-group" data-bind="css: { 'has-error': $root.errors().client }">
               <label class="control-label" for="client">Client</label>
               <select data-bind="options: $root.clients(), optionsValue: 'id', optionsText: 'name' , value: $parent.feature_request().client_id" id="client" class="form-control" name="client"></select>
+              <span class="help-block" data-bind="text: $root.errors().client"></span>
             </div>
 
-            <div class="form-group">
+            <div class="form-group" data-bind="css: { 'has-error': $root.errors().user }">
               <label class="control-label" for="user">User</label>
               <select data-bind="options: $root.users(), optionsValue: 'id', optionsText: 'first_name', value: $parent.feature_request().user_id" id="user" class="form-control" name="user"></select>
+              <span class="help-block" data-bind="text: $root.errors().user"></span>
             </div>
 
-            <div class="form-group">
+            <div class="form-group" data-bind="css: { 'has-error': $root.errors().client_priority }">
               <label class="control-label" for="client_priority">Priority</label>
               <input data-bind="value: client_priority" type="number" id="client_priority" placeholder="1" class="form-control" name="client_priority" required>
+              <span class="help-block" data-bind="text: $root.errors().client_priority"></span>
             </div>
 
-            <div class="form-group">
+            <div class="form-group"  data-bind="css: { 'has-error': $root.errors().target_date }">
               <label class="control-label" for="target_date">Target date</label>
                 <div class="input-group date">
                   <input data-bind="value: target_date" id="target_date" name="target_date" type="date" class="form-control" required>
@@ -125,11 +137,13 @@
                     <span class="glyphicon glyphicon-calendar"></span>
                   </div>
                 </div>
+                <span class="help-block" data-bind="text: $root.errors().target_date"></span>
             </div>
 
-            <div class="form-group">
+            <div class="form-group" data-bind="css: { 'has-error': $root.errors().product_area }">
               <label class="control-label" for="product_area">Product area</label>
               <select data-bind="options: $root.product_areas(), optionsValue: 'id', optionsText: 'name', value: $parent.feature_request().product_area_id" id="product_area" class="form-control" name="product_area"></select>
+              <span class="help-block" data-bind="text: $root.errors().product_area"></span>
             </div>
 
             <div class="modal-footer">

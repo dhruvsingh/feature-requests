@@ -30,16 +30,11 @@ function ClientModel(data) {
     this.name = ko.observable(data.name);
 }
 
-function get_feature_requests(){
-    $.getJSON("/api/feature_requests/", function(data) {
-        return $.map(data['feature_requests'], function(item) { return new FeatureRequestModel(item) });
-    });
-}
-
 function FeatureRequestViewModel() {
     var self = this;
     self.featureRequests = ko.observableArray([]);
     self.feature_request = ko.observableArray();
+    self.errors = ko.observableArray();
 
     $.getJSON("/api/feature_requests/", function(data) {
         var mappedFeatures = $.map(data['feature_requests'], function(item) { return new FeatureRequestModel(item) });
@@ -66,8 +61,6 @@ function FeatureRequestViewModel() {
 
     self.addRequest = function(form_element) {
         var data = $('#add_fr_form').serializeArray().map(function(x){this[x.name] = x.value; return this;}.bind({}))[0];
-        var has_errors = false;
-        self.errors = null;
 
         $.ajax(
             '/api/feature_requests/add/',
@@ -81,17 +74,10 @@ function FeatureRequestViewModel() {
                     alert(data['message']);
                 },
                 error: function (errors) {
-                    has_errors = true;
-                    self.errors = errors.responseJSON.errors;
+                    self.errors(errors.responseJSON.errors);
                 }
-            });
-
-        if (has_errors){
-            self.errors = errors.responseJSON.errors
-        }
-        else{
-
-        }
+            }
+        );
     };
 
     self.setRequest = function(feature_request) {
@@ -101,8 +87,6 @@ function FeatureRequestViewModel() {
 
     self.updateRequest = function(form_element){
         var data = $('#edit_fr_form').serializeArray().map(function(x){this[x.name] = x.value; return this;}.bind({}))[0];
-        var has_errors = false;
-        var errors = null;
 
         $.ajax(
             '/api/feature_requests/' + data.id + '/',
@@ -119,14 +103,10 @@ function FeatureRequestViewModel() {
                     alert(new_data['message']);
                 },
                 error: function (errors) {
-                    has_errors = true;
-                    errors = errors.responseJSON.errors;
+                    self.errors(errors.responseJSON.errors);
                 }
-            });
-
-        if (has_errors){
-            self.errors = errors.responseJSON.errors
-        }
+            }
+        );
     };
 }
 
