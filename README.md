@@ -1,9 +1,9 @@
 ## RESTful Feature Requests app using
-    - [Flask](https://readthedocs.org/projects/flask/)
-    - [Flask Marshmallow](https://flask-marshmallow.readthedocs.io/en/latest/)
-    - [Flask SQLAlchemy](http://flask-sqlalchemy.pocoo.org/2.3/)
-    - [Knockoutjs](http://knockoutjs.com/)
-    - [bootstrap v3](https://getbootstrap.com/docs/3.3/getting-started/)
+- [Flask](https://readthedocs.org/projects/flask/)
+- [Flask Marshmallow](https://flask-marshmallow.readthedocs.io/en/latest/)
+- [Flask SQLAlchemy](http://flask-sqlalchemy.pocoo.org/2.3/)
+- [Knockoutjs](http://knockoutjs.com/)
+- [bootstrap v3](https://getbootstrap.com/docs/3.3/getting-started/)
 
 Basic RESTful implementation without authenticated backend, for creating and editing feature requests.
 Done to try my hands on flask, sqlalchemy and knockoutjs.
