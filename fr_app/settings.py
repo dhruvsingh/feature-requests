@@ -14,3 +14,8 @@ class ProductionConf(BaseConf):
 class DevelopmentConf(BaseConf):
     DEBUG = True
     SQLALCHEMY_ECHO = True
+
+
+class TestingConf(DevelopmentConf):
+    TESTING = True
+    SQLALCHEMY_DATABASE_URI = "sqlite:///:memory:"
