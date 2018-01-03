@@ -41,7 +41,7 @@ def read_env():
 read_env()
 
 app = Flask(__name__)
-env = get_env_var('SETTINGS_MODULE', 'DevelopmentConf')
+env = get_env_var('SETTINGS_MODULE', 'fr_app.settings.DevelopmentConf')
 app.config.from_object(env)
 app.config['ENV'] = env
 # guess this is the standard way as to how Flask works
