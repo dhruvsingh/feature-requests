@@ -1,6 +1,12 @@
 import os
+import json
 import unittest
 import tempfile
+
+from copy import deepcopy
+from datetime import datetime
+
+from dateutil.relativedelta import relativedelta
 
 from fr_app import app
 from fr_app.models import db, User, FeatureRequest, Client, ProductArea
@@ -13,6 +19,15 @@ app.config.from_object('fr_app.settings.TestingConf')
 class FeatureRequestTestCase(unittest.TestCase, FixturesMixin):
     fixtures = ['clients.json', 'product_areas.json', 'users.json']
     app, db = app, db
+    post_data = {
+        "user": 1,
+        "client": 1,
+        "product_area": 1,
+        "title": "First Feature Request",
+        "client_priority": 1,
+        "description": "First Feature Request description",
+        "target_date": str(datetime.utcnow().date())
+    }
 
     def setUp(self):
         self.db_fd, app.config['DATABASE'] = tempfile.mkstemp()
@@ -46,6 +61,106 @@ class FeatureRequestTestCase(unittest.TestCase, FixturesMixin):
         """Test initial data for FeatureRequest model."""
         feature_requests = FeatureRequest.query.all()
         assert len(feature_requests) == FeatureRequest.query.count() == 0
+
+    def test_creating_feature_request_no_data(self):
+        response = self.app.post('/api/feature_requests/add/', data=dict())
+        response_data = json.loads(response.get_data().decode('utf-8'))
+        assert response_data['message'] == 'No input data provided'
+
+    def test_creating_feature_request_valid_data(self):
+        response = self.app.post(
+            '/api/feature_requests/add/',
+            data=json.dumps(self.post_data),
+            content_type='application/json'
+        )
+        response_data = json.loads(response.get_data().decode('utf-8'))
+        assert response_data['message'] == 'Created new feature request.'
+
+    def test_creating_feature_request_invalid_title(self):
+        post_data = deepcopy(self.post_data)
+        post_data['title'] = 'less'
+        response = self.app.post(
+            '/api/feature_requests/add/',
+            data=json.dumps(post_data),
+            content_type='application/json'
+        )
+        response_data = json.loads(response.get_data().decode('utf-8'))
+        assert response_data['errors']['title'][0] == \
+            'Length must be between 6 and 255.'
+
+    def test_creating_feature_request_past_target_date(self):
+        post_data = deepcopy(self.post_data)
+        now = datetime.utcnow().date()
+        post_data['target_date'] = str(now - relativedelta(months=1))
+        response = self.app.post(
+            '/api/feature_requests/add/',
+            data=json.dumps(post_data),
+            content_type='application/json'
+        )
+        response_data = json.loads(response.get_data().decode('utf-8'))
+        assert response_data['errors']['target_date'][0] == \
+            'Target date must be in the future'
+
+    def test_creating_feature_request_negative_client_priority(self):
+        post_data = deepcopy(self.post_data)
+        post_data['client_priority'] = -1
+        response = self.app.post(
+            '/api/feature_requests/add/',
+            data=json.dumps(post_data),
+            content_type='application/json'
+        )
+        response_data = json.loads(response.get_data().decode('utf-8'))
+        assert response_data['errors']['client_priority'][0] == \
+            'Must be at least 1.'
+
+    def test_creating_feature_request_no_user_data(self):
+        post_data = deepcopy(self.post_data)
+        del post_data['user']
+        response = self.app.post(
+            '/api/feature_requests/add/',
+            data=json.dumps(post_data),
+            content_type='application/json'
+        )
+        response_data = json.loads(response.get_data().decode('utf-8'))
+        assert response_data['errors']['user'][0] == \
+            'Missing data for required field.'
+
+    def test_creating_feature_request_no_client_data(self):
+        post_data = deepcopy(self.post_data)
+        del post_data['client']
+        response = self.app.post(
+            '/api/feature_requests/add/',
+            data=json.dumps(post_data),
+            content_type='application/json'
+        )
+        response_data = json.loads(response.get_data().decode('utf-8'))
+        assert response_data['errors']['client'][0] == \
+            'Missing data for required field.'
+
+    def test_creating_feature_request_no_product_area_data(self):
+        post_data = deepcopy(self.post_data)
+        del post_data['product_area']
+        response = self.app.post(
+            '/api/feature_requests/add/',
+            data=json.dumps(post_data),
+            content_type='application/json'
+        )
+        response_data = json.loads(response.get_data().decode('utf-8'))
+        assert response_data['errors']['product_area'][0] == \
+            'Missing data for required field.'
+
+    def test_creating_feature_request_no_title_data(self):
+        post_data = deepcopy(self.post_data)
+        del post_data['title']
+        response = self.app.post(
+            '/api/feature_requests/add/',
+            data=json.dumps(post_data),
+            content_type='application/json'
+        )
+        response_data = json.loads(response.get_data().decode('utf-8'))
+        assert response_data['errors']['title'][0] == \
+            'Missing data for required field.'
+
 
 if __name__ == '__main__':
     unittest.main()
