@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/dhruvsingh/feature-requests.svg?branch=master)](https://travis-ci.org/dhruvsingh/feature-requests)
+
 ## RESTful Feature Requests app using
 - [Flask](https://readthedocs.org/projects/flask/)
 - [Flask Marshmallow](https://flask-marshmallow.readthedocs.io/en/latest/)
