@@ -30,6 +30,9 @@ Running on local?, try the following steps:
 8. Browse to http://localhost:5000 to access the app.
 9. Want to drop the database, use ./manage.py drop_db. (will need tp repeat step 5 and 6 for the app to run again)
 
+Tests:
+- In order to run tests, cd to the cloned repo directory, activate virtualenv and run ```python tests.py```
+
 Note: The app uses a temporary sqllite database when running locally. Exiting the terminal will mean loss in data.
 
 The app can also be accessed [here](https://iws-feature-requests.herokuapp.com/).
