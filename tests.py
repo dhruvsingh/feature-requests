@@ -161,6 +161,78 @@ class FeatureRequestTestCase(unittest.TestCase, FixturesMixin):
         assert response_data['errors']['title'][0] == \
             'Missing data for required field.'
 
+    def test_creating_feature_request_check_client_priority_reordering(self):
+        response = self.app.post(
+            '/api/feature_requests/add/',
+            data=json.dumps(self.post_data),
+            content_type='application/json'
+        )
+        response_data = json.loads(response.get_data().decode('utf-8'))
+        assert response_data['message'] == 'Created new feature request.'
+        first_id, first_client_priority = \
+            response_data['data'][0]['id'],\
+            response_data['data'][0]['client_priority']
+
+        assert first_id == 1
+        assert first_client_priority == 1
+
+        # sending same client_priority again will result in moving the first
+        # priority to 2
+        response = self.app.post(
+            '/api/feature_requests/add/',
+            data=json.dumps(self.post_data),
+            content_type='application/json'
+        )
+        response_data = json.loads(response.get_data().decode('utf-8'))
+        assert response_data['message'] == 'Created new feature request.'
+        second_id, second_client_priority = \
+            response_data['data'][0]['id'],\
+            response_data['data'][0]['client_priority']
+
+        first_fr = FeatureRequest.query.get(first_id)
+        assert first_fr.id == 1
+        # got reordered after adding another feature request
+        assert first_fr.client_priority == 2
+        assert second_id == 2
+        assert second_client_priority == 1
+
+    def test_creating_feature_request_check_client_priority_no_reordering(
+            self):
+        response = self.app.post(
+            '/api/feature_requests/add/',
+            data=json.dumps(self.post_data),
+            content_type='application/json'
+        )
+        response_data = json.loads(response.get_data().decode('utf-8'))
+        assert response_data['message'] == 'Created new feature request.'
+        first_id, first_client_priority = \
+            response_data['data'][0]['id'],\
+            response_data['data'][0]['client_priority']
+
+        assert first_id == 1
+        assert first_client_priority == 1
+
+        post_data = deepcopy(self.post_data)
+        post_data['client_priority'] = 2
+        response = self.app.post(
+            '/api/feature_requests/add/',
+            data=json.dumps(post_data),
+            content_type='application/json'
+        )
+        response_data = json.loads(response.get_data().decode('utf-8'))
+        assert response_data['message'] == 'Created new feature request.'
+        second_id, second_client_priority = \
+            response_data['data'][0]['id'],\
+            response_data['data'][0]['client_priority']
+
+        first_fr = FeatureRequest.query.get(first_id)
+
+        assert first_fr.id == 1
+        # got reordered after adding another feature request
+        assert first_fr.client_priority == 1
+        assert second_id == 2
+        assert second_client_priority == 2
+
 
 if __name__ == '__main__':
     unittest.main()
