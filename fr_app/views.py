@@ -7,6 +7,7 @@ from .schema import (
     ProductAreaSchema,
     FeatureRequestSchema
 )
+from .utils import fix_client_priorities
 
 
 def _build_feature_request_data(feature_request, data):
@@ -69,7 +70,7 @@ def get_feature_requests():
     return jsonify({'feature_requests': result.data})
 
 
-@app.route('/api/feature_requests/<int:id>/', methods=('GET', 'POST'))
+@app.route('/api/feature_requests/<int:id>/', methods=('POST',))
 def fetch_feature_request_by_id(id=None):
     """Add/update a feature request."""
     if not id:
@@ -125,6 +126,7 @@ def add_feature_request():
     if errors:
         return jsonify({"errors": errors}), 400
 
+    fix_client_priorities(data['client_priority'])
     feature_request = FeatureRequest()
     feature_request = _build_feature_request_data(feature_request, data)
 
