@@ -233,6 +233,29 @@ class FeatureRequestTestCase(unittest.TestCase, FixturesMixin):
         assert second_id == 2
         assert second_client_priority == 2
 
+    def test_updating_feature_request(self):
+        response = self.app.post(
+            '/api/feature_requests/add/',
+            data=json.dumps(self.post_data),
+            content_type='application/json'
+        )
+        response_data = json.loads(response.get_data().decode('utf-8'))
+        assert response_data['message'] == 'Created new feature request.'
+        description = response_data['data'][0]['description']
+
+        assert description == self.post_data['description']
+
+        # update FR now
+        self.post_data['description'] = "I updated description"
+        response = self.app.post(
+            '/api/feature_requests/1/',
+            data=json.dumps(self.post_data),
+            content_type='application/json'
+        )
+        response_data = json.loads(response.get_data().decode('utf-8'))
+        assert response_data['data'][0]['description'] ==\
+            self.post_data['description']
+
 
 if __name__ == '__main__':
     unittest.main()
