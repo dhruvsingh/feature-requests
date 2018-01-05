@@ -233,7 +233,7 @@ class FeatureRequestTestCase(unittest.TestCase, FixturesMixin):
         assert second_id == 2
         assert second_client_priority == 2
 
-    def test_updating_feature_request(self):
+    def test_updating_feature_request_description(self):
         response = self.app.post(
             '/api/feature_requests/add/',
             data=json.dumps(self.post_data),
@@ -255,6 +255,61 @@ class FeatureRequestTestCase(unittest.TestCase, FixturesMixin):
         response_data = json.loads(response.get_data().decode('utf-8'))
         assert response_data['data'][0]['description'] ==\
             self.post_data['description']
+
+    def test_updating_feature_request_client_priority(self):
+        """Create a feature with priority 1, and update it to 2"""
+        response = self.app.post(
+            '/api/feature_requests/add/',
+            data=json.dumps(self.post_data),
+            content_type='application/json'
+        )
+        response_data = json.loads(response.get_data().decode('utf-8'))
+        assert response_data['message'] == 'Created new feature request.'
+        client_priority = response_data['data'][0]['client_priority']
+
+        assert client_priority == self.post_data['client_priority']
+
+        # update FR now
+        self.post_data['client_priority'] = 2
+        response = self.app.post(
+            '/api/feature_requests/1/',
+            data=json.dumps(self.post_data),
+            content_type='application/json'
+        )
+        response_data = json.loads(response.get_data().decode('utf-8'))
+        assert response_data['data'][0]['client_priority'] ==\
+            self.post_data['client_priority']
+
+    def test_updating_feature_requests_client_priority(self):
+        """
+        Create feature requests with priority 1, and 2.
+        Update the second one to be 3, check only 1 and 3 exist.
+        """
+        for turn in range(1, 3):
+            self.post_data['client_priority'] = turn
+            response = self.app.post(
+                '/api/feature_requests/add/',
+                data=json.dumps(self.post_data),
+                content_type='application/json'
+            )
+            response_data = json.loads(response.get_data().decode('utf-8'))
+            assert response_data['message'] == 'Created new feature request.'
+            client_priority = response_data['data'][0]['client_priority']
+
+        assert client_priority == self.post_data['client_priority']
+
+        # update FR now
+        self.post_data['client_priority'] = 3
+        response = self.app.post(
+            '/api/feature_requests/2/',
+            data=json.dumps(self.post_data),
+            content_type='application/json'
+        )
+        response_data = json.loads(response.get_data().decode('utf-8'))
+        assert response_data['data'][0]['client_priority'] ==\
+            self.post_data['client_priority']
+        assert FeatureRequest.query.get(1).client_priority == 1
+        assert FeatureRequest.query.get(2).client_priority == 3
 
 
 if __name__ == '__main__':

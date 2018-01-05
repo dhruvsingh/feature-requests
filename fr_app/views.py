@@ -99,6 +99,7 @@ def fetch_feature_request_by_id(id=None):
     if errors:
         return jsonify({"errors": errors}), 422
 
+    fix_client_priorities(data['client_priority'])
     feature_request = _build_feature_request_data(feature_request, data)
 
     db.session.add(feature_request)
