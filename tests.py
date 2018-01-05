@@ -311,40 +311,6 @@ class FeatureRequestTestCase(unittest.TestCase, FixturesMixin):
         assert FeatureRequest.query.get(1).client_priority == 1
         assert FeatureRequest.query.get(2).client_priority == 3
 
-    def test_creating_feature_request_invalid_user(self):
-        post_data = deepcopy(self.post_data)
-        post_data['user'] = 6
-        response = self.app.post(
-            '/api/feature_requests/add/',
-            data=json.dumps(post_data),
-            content_type='application/json'
-        )
-        response_data = json.loads(response.get_data().decode('utf-8'))
-        assert response_data['errors']['user'][0] == 'Not a valid choice.'
-
-    def test_creating_feature_request_invalid_client(self):
-        post_data = deepcopy(self.post_data)
-        post_data['client'] = 6
-        response = self.app.post(
-            '/api/feature_requests/add/',
-            data=json.dumps(post_data),
-            content_type='application/json'
-        )
-        response_data = json.loads(response.get_data().decode('utf-8'))
-        assert response_data['errors']['client'][0] == 'Not a valid choice.'
-
-    def test_creating_feature_request_invalid_product_area(self):
-        post_data = deepcopy(self.post_data)
-        post_data['product_area'] = 6
-        response = self.app.post(
-            '/api/feature_requests/add/',
-            data=json.dumps(post_data),
-            content_type='application/json'
-        )
-        response_data = json.loads(response.get_data().decode('utf-8'))
-        assert response_data['errors']['product_area'][0] ==\
-            'Not a valid choice.'
-
     def test_creating_feature_request_invalid_target_date(self):
         post_data = deepcopy(self.post_data)
         # invalid date for November month

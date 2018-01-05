@@ -1,6 +1,5 @@
 from marshmallow import validate, Schema, fields
 from .utils import validate_date_in_future
-from .models import User, Client, ProductArea
 
 
 class UserSchema(Schema):
@@ -31,24 +30,15 @@ class FeatureRequestSchema(Schema):
     )
     user_id = fields.Int(
         required=True,
-        load_from="user",
-        validate=[validate.OneOf(
-            choices=[user.id for user in User.query.all()]
-        )]
+        load_from="user"
     )
     client_id = fields.Int(
         required=True,
-        load_from="client",
-        validate=[validate.OneOf(
-            choices=[client.id for client in Client.query.all()]
-        )]
+        load_from="client"
     )
     product_area_id = fields.Int(
         required=True,
-        load_from="product_area",
-        validate=[validate.OneOf(
-            choices=[pa.id for pa in ProductArea.query.all()]
-        )]
+        load_from="product_area"
     )
     user = fields.Str(dump_only=True)
     client = fields.Str(dump_only=True)
