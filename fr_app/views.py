@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from fr_app import app
 from flask import render_template, request, jsonify
 from .models import db, User, Client, ProductArea, FeatureRequest
@@ -20,7 +22,14 @@ def _build_feature_request_data(feature_request, data):
         "client_priority",
         "product_area_id"
     ]:
-        setattr(feature_request, field, data.get(field, None))
+        setattr(
+            feature_request,
+            field,
+            data.get(
+                field,
+                getattr(feature_request, field)
+            )
+        )
 
     return feature_request
 
@@ -78,7 +87,6 @@ def fetch_feature_request_by_id(id=None):
             {"message": "Feature Request id is needed."}
         ), 400
 
-    feature_requests_schema = FeatureRequestSchema()
     json_data = request.get_json()
     feature_request = FeatureRequest.query.get(id)
 
@@ -87,13 +95,19 @@ def fetch_feature_request_by_id(id=None):
             {"message": "Feature Request could not be found."}
         ), 400
 
-    result = feature_requests_schema.dump(feature_request)
+    # done so that the requests added in the past do not interfere with schema
+    # validation
+    try:
+        if feature_request.target_date != datetime.strptime(
+                json_data['target_date'], "%Y-%m-%d").date():
+            feature_requests_schema = FeatureRequestSchema()
+        else:
+            feature_requests_schema = FeatureRequestSchema(
+                exclude=('target_date',)
+            )
+    except ValueError as error:
+        return jsonify({'errors': {'target_date': str(error)}}), 422
 
-    # if no json data came in consider the request as GET
-    if not json_data:
-        return jsonify({"feature_request": result.data})
-
-    # POST request
     data, errors = feature_requests_schema.load(json_data)
 
     if errors:
