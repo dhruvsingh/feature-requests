@@ -1,6 +1,6 @@
 click==6.7
 decorator==4.1.2
-Flask==1.0
+Flask==2.3.2
 Flask-Fixtures==0.3.7
 flask-marshmallow==0.8.0
 Flask-SQLAlchemy==2.3.2
